@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Quản lý Mẫu Văn Bản Cúng Bái</h2>
+    <h2 class="mb-3">Quản lý Mẫu Văn Bản Cúng Bái</h2>
     <!-- Button mở modal -->
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addRitualTextModal">
         Thêm Mẫu

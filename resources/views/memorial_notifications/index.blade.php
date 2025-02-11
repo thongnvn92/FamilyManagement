@@ -3,7 +3,7 @@
 @section('title', 'Thông Báo Ngày Giỗ')
 
 @section('content')
-    <h2>Thông Báo Ngày Giỗ</h2>
+    <h2 class="mb-3">Thông Báo Ngày Giỗ</h2>
     <table class="table table-bordered">
         <thead>
             <tr>

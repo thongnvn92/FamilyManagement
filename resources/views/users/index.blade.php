@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container">
-    <h2>Danh sách Người Dùng</h2>
+    <h2 class="mb-3">Danh sách Người Dùng</h2>
      <!-- Nút mở modal -->
      <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
         Thêm User

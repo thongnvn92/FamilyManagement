@@ -28,21 +28,26 @@ Route::middleware('auth')->group(function () {
 Route::get('/', function () {
     return view('welcome');
 });
-
+// Quản lý cây lược sử
+Route::get('/family-tree', [FamilyTreeController::class, 'index'])->name('family.tree');
 // Quản lý người dùng
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/detail/{id}', [UserController::class, 'show'])->name('users.detail.show');
-// Route cập nhật thông tin thành viên (đổi từ '/family-members/{id}' thành '/users/{id}')
+// Route cập nhật thông tin thành viên
 Route::post('/users/detail/{id}', [UserController::class, 'update'])->name('users.update');
 Route::post('/users', [UserController::class, 'store']);
-
 // Quản lý cây gia phả
 Route::get('/family-tree', [FamilyTreeController::class, 'index'])->name('family.tree');
-
+// Quản lý bài cúng
 Route::resource('/ritual-texts', RitualTextController::class)->except(['create', 'show']);
-
-Route::get('/lunar-calendar', [LunarCalendarController::class, 'index'])->name('lunar.index');
-
+// Quản lý lịch âm
+Route::get('/lunar-calendar', function () {
+    return view('lunar.index');
+});
+// Quản lý Thông tin từng hộ gia đình
+Route::get('/wiki-family', function () {
+    return view('wiki.index');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');

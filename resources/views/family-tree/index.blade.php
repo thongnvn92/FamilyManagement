@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h2 class="text-center">Cây Gia Phả</h2>
+        <h2 class="mb-3">Cây Gia Phả</h2>
         <div id="tree"></div>
     </div>
 
