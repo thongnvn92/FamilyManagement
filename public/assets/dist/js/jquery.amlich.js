@@ -480,9 +480,9 @@
     res += printTable(mm, yy);
     return res;
   }
-  function printSimpleMonth(mm, yy) {
+  function printBootstrapMonth(mm, yy) {
     var res = "";
-    res += printSimpleTable(mm, yy);
+    res += printBootstrapTable(mm, yy);
     return res;
   }
 
@@ -540,7 +540,7 @@
     return res;
   }
 
-  function printSimpleTable(mm, yy) {
+  function printBootstrapTable(mm, yy) {
     var i, j, k, solar, lunar, cellClass, solarClass, lunarClass;
     var currentMonth = getMonth(mm, yy);
     if (currentMonth.length == 0) return false;
@@ -549,12 +549,41 @@
     var MonthHead = mm + "/" + yy;
     var LunarHead = getYearCanChi(ld1.year);
     var res = "";
-    res += '<table class="amlich" border="0" cellpadding="0" cellspacing="0" width="'+settings.tableWidth+'">\n';
-    res += '<tbody>\n';
-    res += printSimpleHead(mm, yy);
-
-    res += '</tbody>\n';
-    res += '</table>\n';
+    res += printBootstrapHead(mm, yy);
+    res += `<div class="col-md-6 calendar-container text-center">
+            <table class="table table-bordered calendar">
+                <thead>
+                    <tr>
+                        <th>CHỦ NHẬT</th>
+                        <th>THỨ HAI</th>
+                        <th>THỨ BA</th>
+                        <th>THỨ TƯ</th>
+                        <th>THỨ NĂM</th>
+                        <th>THỨ SÁU</th>
+                        <th>THỨ BẢY</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">`;
+    for (i = 0; i < 6; i++) {
+        res += '<tr>\n';
+        for (j = 0; j < 7; j++) {
+          k = 7 * i + j;
+          if (k < emptyCells || k >= emptyCells + currentMonth.length) {
+            res += `<td class="" data-day="${10}">
+                                        <div class="day-duong">&nbsp;</div>
+                                        <div class="day-am">&nbsp;</div>
+                                    </td>`;
+          } else {
+            solar = k - emptyCells + 1;
+            ld1 = currentMonth[k - emptyCells];
+            res += printCellBootstrap(ld1, solar, mm, yy);
+          }
+        }
+        res += '</tr>\n';
+      }
+    res += `</tbody>
+            </table>
+        </div>`;
     return res;
   }
 
@@ -578,61 +607,68 @@
     return '<a class="next-year" data-yy="'+(yy+1)+'" data-mm="'+mm+'" href="#">&rsaquo;&rsaquo;</a>';
   }
 
-  function printSimpleHead(mm, yy) {
-    var res = "";
-    var monthName = mm+"/"+yy;
+  function printBootstrapHead(mm, yy) {
+    let res = ``;
+    let monthName = mm+"/"+yy;
 
     switch ( settings.type ) {
-      case 'horizoncalendar':
-        var cc = getCanChi(currentLunarDate),
+      case 'bootstrap':
+        let cc = getCanChi(currentLunarDate),
             holiday = getHolodayString( today.getDate(), (today.getMonth()+1), currentLunarDate.day, currentLunarDate.month );
-        res += '<tr>\n';
-        res += '  <td colspan="7">\n';
-        res += '    <table class="calendar" border="0" cellpadding="4" cellspacing="0" width="100%">\n';
-        res += '      <tbody>\n';
-        res += '        <tr>\n';
-        res += '          <td colspan="2" class="calendar-month">Tháng '+(today.getMonth()+1)+' Năm '+today.getFullYear()+'</td>\n';
-        res += '        </tr>\n';
-        res += '        <tr>\n';
-        res += '          <td colspan="2" class="calendar-day">\n';
-        res += '            <span class="day-num">'+today.getDate()+'</span><br>\n';
-        res += '            <span class="day-tuan">'+TUAN[(currentLunarDate.jd + 1) % 7]+'</span>\n';
-        res += '          </td>\n';
-        res += '        </tr>\n';
-        res += '        <tr>\n';
-        res += '          <td width="50%" class="calendar-b-left" valign="top">\n';
-        res += '            <span class="lunar-month-name">Tháng '+THANG[currentLunarDate.month-1]+'</span><br>\n';
-        res += '            <span class="lunar-day-num">'+currentLunarDate.day+'</span><br>\n';
-        res += '            <span class="lunar-year-name"><strong>'+cc[2]+'</strong></span>\n';
-        res += '          </td>\n';
-        res += '          <td width="50%" class="calendar-b-right" valign="top">\n';
-        res += '            <span>Ngày <strong>'+cc[0]+'</strong></span><br>\n';
-        res += '            <span>Tháng <strong>'+cc[1]+'</strong></span><br>\n';
-        res += '            <span>Giờ đầu <strong>'+(getCanHour0(currentLunarDate.jd)+' '+CHI[0])+'</strong></span><br>\n';
-        res += '            <span>Tiết <strong>'+TIETKHI[getSunLongitude(currentLunarDate.jd + 1, 7.0)]+'</strong></span><br>\n';
-        res += '            <span>PL: <strong>'+getPhatLich()+'</strong></span>\n';
-        res += '          </td>\n';
-        res += '        </tr>\n';
-        res += '        <tr class="calendar-holiday">'+(holiday!='' ? '<td colspan="2">'+holiday+'</td>' : '')+'</tr>\n';
-        res += '        <tr>\n';
-        res += '          <td colspan="2" class="calendar-hoangdao">Giờ hoàng đạo: '+getGioHoangDao(currentLunarDate.jd)+'</td>\n';
-        res += '        </tr>\n';
-        res += '      </tbody>\n';
-        res += '    </table>\n';
-        res += '  </td>\n';
-        res += '</tr>\n';
-        res += '<tr>\n';
-        res += '  <td colspan="2" class="navi-l">'+getPrevYearLink(mm, yy)+' &nbsp;'+getPrevMonthLink(mm, yy)+'</td>\n';
-        res += '  <td colspan="3" class="tenthang">'+monthName+'</td>\n';
-        res += '  <td colspan="2" class="navi-r">'+getNextMonthLink(mm, yy)+' &nbsp;'+getNextYearLink(mm, yy)+'</td></tr>\n';
-        res += '</tr>\n';
+        res = `<div class="col-md-6 calendar-container text-center">
+            <div class="border">
+                <div class="header-calendar d-flex justify-content-between fs-5">
+                    <div class="calendar-month">THÁNG ${(today.getMonth()+1)}</div>
+                    <div class="calendar-year">${today.getFullYear()}</div>
+                    <div class="day-num">THỨ BA</div>
+                </div>
+                <div class="p-2 d-flex justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-outline-success"><i class="fa fa-sun-o"></i> Hôm nay</button>
+                    </div>
+
+                    <div class="d-grid">
+                        <span class="fs-6">Tuần ${TUAN[(currentLunarDate.jd + 1) % 7]}</span>
+                        <span class="fs-6">Ngày ...</span>
+                    </div>
+                </div>
+                <div class="selected-date p-2 d-flex justify-content-center align-items-center">
+                    <button type="button" class="btn-nav">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <div id="selectedDate">${today.getDate()}</div>
+                    <button type="button" class="btn-nav">
+                        <i class="fa fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="border-primary border-start p-2 mx-auto w-75">
+                    <p class="text-left fst-italic" style="font-size: 0.8rem;">
+                        Giờ hoàng đạo: ${getGioHoangDao(currentLunarDate.jd)}
+                    </p>
+                </div>
+                <p class="text-center" style="font-size: 0.9rem;">Tiết <span
+                        class="text-primary">${TIETKHI[getSunLongitude(currentLunarDate.jd + 1, 7.0)]}</span> | Phật Lịch:
+                    ${getPhatLich()}</p>
+                <hr>
+                <div class="info-container p-2 d-flex justify-content-between align-items-start">
+                    <div class="d-grid fs-6">
+                        <span>Ngày ${cc[0]}</span>
+                        <span>Tháng ${cc[1]}</span>
+                    </div>
+                    <div class="d-grid">
+                        <span>Tháng ${THANG[currentLunarDate.month-1]}</span>
+                        <span class="fs-1">${currentLunarDate.day}</span>
+                        <span>Năm ${cc[2]}</span>
+                    </div>
+                    <div class="d-grid fs-6">
+                        <span>Giờ Đầu ${(getCanHour0(currentLunarDate.jd)+' '+CHI[0])}</span>
+                        <span>Tuần ...</span>
+                    </div>
+                </div>
+            </div>
+        </div>`;
         break;
     }
-    res += '<tr>\n';
-    for(var i=0;i<=6;i++) {
-      res += '  <td class="ngaytuan">'+DAYNAMES[i]+'</td>\n';
-    }
-    res += '</tr>\n';
     return res;
   }
 
@@ -793,6 +829,57 @@
     return res;
   }
 
+  function printCellBootstrap(lunarDate, solarDate, solarMonth, solarYear) {
+    var cellClass, solarClass, lunarClass, solarColor,
+        cellClass = "ngaythang",
+        solarClass = "day-duong",
+        lunarClass = "day-am",
+        title = '',
+        tmp = '',
+        dow = (lunarDate.jd + 1) % 7;
+    if (dow == 0) {
+      solarClass = "day-duong cn";
+      solarColor = "red";
+    } else if (dow == 6) {
+      solarClass = "day-duong t7";
+      solarColor = "green";
+    }
+    if (solarDate == today.getDate() && solarMonth == today.getMonth()+1 && solarYear == today.getFullYear()) {
+      cellClass = "homnay";
+    }
+    tmp = checkHolidayLunar( lunarDate.day, lunarDate.month);
+    if ( tmp != '' ) {
+      cellClass = 'leam';
+      title = tmp;
+    }
+    tmp = checkHolidaySolar( solarDate, solarMonth);
+    if ( tmp != '' ) {
+      cellClass = 'leduong';
+      title = ( title == '' ? tmp : title+', '+tmp);
+    }
+    title = ( title == '' ? getDayName(lunarDate) : title );
+    if (lunarDate.day == 1 && lunarDate.month == 1) {
+      cellClass = "tet";
+    }
+    if (lunarDate.leap == 1) {
+      lunarClass = "day-am am2";
+    }
+    var lunar = lunarDate.day;
+    if (solarDate == 1 || lunar == 1) {
+      lunar = lunarDate.day + '/' + lunarDate.month + (lunarDate.leap == 1 ? '<sup>N</sup>' : '');
+    }
+    var res = "";
+    var args = lunarDate.day + "," + lunarDate.month + "," + lunarDate.year + "," + lunarDate.leap;
+    args += "," + lunarDate.jd + "," + solarDate + "," + solarMonth + "," + solarYear;
+    res += '<td class="'+cellClass+'" data-day="'+solarDate+'"';
+    res += (lunarDate != null ? ' title="'+title+'" data-args="'+args+'"' : '');
+    res += '>\n';
+    res += '  <div class="'+solarClass+'">'+solarDate+'</div>\n';
+    res += '  <div class="'+lunarClass+'">'+lunar+'</div>\n';
+    res += '</td>\n';
+    return res;
+  }
+
   $.fn.amLich = function( options ) {
 
     settings = $.extend({
@@ -864,8 +951,8 @@
       case 'year':
         return $this.html( printYear(currentYear) );
         break;
-      case 'horizoncalendar':
-        return $this.html( printSimpleMonth(currentMonth, currentYear) );
+      case 'bootstrap':
+        return $this.html( printBootstrapMonth(currentMonth, currentYear) );
         break;
       case 'calendar':
         return $this.html( printMonth(currentMonth, currentYear) );
