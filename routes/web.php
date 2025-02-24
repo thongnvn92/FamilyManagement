@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FamilyTreeController;
+use App\Http\Controllers\FamilyHistoriesController;
 use App\Http\Controllers\RitualTextController;
 use App\Http\Controllers\LunarCalendarController;
 
@@ -29,7 +30,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 // Quản lý cây lược sử
-Route::get('/family-tree', [FamilyTreeController::class, 'index'])->name('family.tree');
+Route::get('/family-histories', [FamilyHistoriesController::class, 'index'])->name('family.histories');
 // Quản lý người dùng
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/detail/{id}', [UserController::class, 'show'])->name('users.detail.show');

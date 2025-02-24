@@ -72,7 +72,7 @@ class UserController extends Controller
             'image_url' => $request->input('image_url'),
         ]);
 
-        return redirect()->route('family-members.show', $id)->with('success', 'Cập nhật thành công!');
+        return redirect()->route('users.detail.show', $id)->with('success', 'Cập nhật thành công!');
     }
 
     public function destroy(Request $request, $id)

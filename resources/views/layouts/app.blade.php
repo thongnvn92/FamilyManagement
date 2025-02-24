@@ -33,7 +33,7 @@
                 </h6>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/family-tree') }}">
+                        <a class="nav-link" href="{{ url('/family-histories') }}">
                             <span data-feather="shopping-cart"></span>
                             Lịch sử dòng tộc
                         </a>

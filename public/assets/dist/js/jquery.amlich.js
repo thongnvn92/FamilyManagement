@@ -569,10 +569,7 @@
       for (j = 0; j < 7; j++) {
         k = 7 * i + j;
         if (k < emptyCells || k >= emptyCells + currentMonth.length) {
-          res += `<td class="" data-day="${10}">
-                                        <div class="day-duong">&nbsp;</div>
-                                        <div class="day-am">&nbsp;</div>
-                                    </td>`;
+          res += `<td class="disabled"></td>`;
         } else {
           solar = k - emptyCells + 1;
           ld1 = currentMonth[k - emptyCells];
@@ -653,7 +650,7 @@
                     <div class="d-grid fs-6">
                         <span>Ngày <span class="lunar-day">${cc[0]}</span></span>
                         <span>Tháng <span class="lunar-month-name">${cc[1]}</span></span>
-                        <span>Năm <span class="lunar-month-name">${cc[2]}</span></span>
+                        <span>Năm <span class="lunar-year-name">${cc[2]}</span></span>
                     </div>
                     <div class="d-grid">
                         <span>Tháng <span class="lunar-month-name">${THANG[currentLunarDate.month - 1]}</span></span>
@@ -661,7 +658,7 @@
                         <span>Năm <span class="lunar-year-name">${currentLunarDate.year}</span></span>
                     </div>
                     <div class="d-grid fs-6">
-                        <span>Giờ Đầu ${(getCanHour0(currentLunarDate.jd) + ' ' + CHI[0])}</span>
+                        <span>Giờ Đầu <span class="lunar-can-hour">${(getCanHour0(currentLunarDate.jd) + ' ' + CHI[0])}</span></span>
                         <span>Tuần ...</span>
                     </div>
                 </div>
@@ -930,17 +927,20 @@
           $this.find('.calendar .calendar-b-right').html(s);
           break;
         case 'bootstrap':
-          $this.find('.calendar-container .calendar-month').html(smonth);
-          $this.find('.calendar-container .calendar-year').html(syear);
-          $this.find('.calendar-container .calendar-day .day-num').html(sday);
-          $this.find('.calendar-container .calendar-day .day-tuan').html(TUAN[(jd + 1) % 7]);
-          $this.find('.calendar-container .calendar-holiday').html((holiday!='' ? '<td colspan="2">'+holiday+'</td>' : ''));
-          $this.find('.calendar-container .calendar-hoangdao').html(getGioHoangDao(jd));
-          $this.find('.calendar-container .calendar-phatlich').html(getPhatLich());
-          $this.find('.calendar-container .lunar-day-num').html(dd);
-          $this.find('.calendar-container .lunar-month-name').html(THANG[mm-1]+(leap == 1 ? ' (N)' : ''));
-          $this.find('.calendar-container .lunar-year-name').html(cc[2]);
-          $this.find('.calendar-container .lunar-tiet-name').html(TIETKHI[getSunLongitude(jd + 1, 7.0)]);
+            $this.find('.calendar-container .calendar-month').html(smonth);
+            $this.find('.calendar-container .calendar-year').html(syear);
+            $this.find('.calendar-container .calendar-day .day-num').html(sday);
+            $this.find('.calendar-container .calendar-day .day-tuan').html(TUAN[(jd + 1) % 7]);
+            $this.find('.calendar-container .calendar-holiday').html((holiday!='' ? '<td colspan="2">'+holiday+'</td>' : ''));
+            $this.find('.calendar-container .calendar-hoangdao').html(getGioHoangDao(jd));
+            $this.find('.calendar-container .calendar-phatlich').html(getPhatLich());
+            $this.find('.calendar-container .lunar-day-num').html(dd);
+            $this.find('.calendar-container .lunar-month-name').html(THANG[mm-1]+(leap == 1 ? ' (N)' : ''));
+            $this.find('.calendar-container .lunar-day').html(cc[0]);
+            $this.find('.calendar-container .lunar-month-name').html(cc[1]);
+            $this.find('.calendar-container .lunar-year-name').html(cc[2]);
+            $this.find('.calendar-container .lunar-tiet-name').html(TIETKHI[getSunLongitude(jd + 1, 7.0)]);
+            $this.find('.calendar-container .lunar-can-hour').html((getCanHour0(jd) + ' ' + CHI[0]));
 
           break;
       }
