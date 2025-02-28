@@ -27,7 +27,7 @@
                     <td>{{ ucfirst($user->role) }}</td>
                     <td>
                         <a href="{{ route('users.detail.show', $user->id) }}" class="btn btn-primary">Chi tiết</a>
-                        <button class="btn btn-warning editUserBtn" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">Sửa</button>
+                        <button class="btn btn-warning editUserBtn" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">Sửa nhanh</button>
                         <button class="btn btn-danger deleteUserBtn" data-id="{{ $user->id }}">Xóa</button>
                     </td>
                 </tr>

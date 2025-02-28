@@ -21,6 +21,43 @@
                     <label>Email</label>
                     <input type="email" name="email" class="form-control" value="{{ $member->user->email }}">
                 </div>
+
+                <div class="form-group">
+                    <label for="partner_id">Vợ/Chồng</label>
+                    <select name="partner_id" id="partner_id" class="form-control">
+                        <option value="">-- Chọn vợ/chồng --</option>
+                        @foreach ($availableUsers as $availableUser)
+                            <option value="{{ $availableUser->id }}" {{ old('partner_id', $familyTree->partner_id ?? '') == $availableUser->id ? 'selected' : '' }}>
+                                {{ $availableUser->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="father_id">Cha</label>
+                    <select name="father_id" id="father_id" class="form-control">
+                        <option value="">-- Chọn cha --</option>
+                        @foreach ($availableUsers as $availableUser)
+                            <option value="{{ $availableUser->id }}" {{ old('father_id', $familyTree->father_id ?? '') == $availableUser->id ? 'selected' : '' }}>
+                                {{ $availableUser->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="mother_id">Mẹ</label>
+                    <select name="mother_id" id="mother_id" class="form-control">
+                        <option value="">-- Chọn mẹ --</option>
+                        @foreach ($availableUsers as $availableUser)
+                            <option value="{{ $availableUser->id }}" {{ old('mother_id', $familyTree->mother_id ?? '') == $availableUser->id ? 'selected' : '' }}>
+                                {{ $availableUser->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
             </div>
 
             <div class="col-md-6">

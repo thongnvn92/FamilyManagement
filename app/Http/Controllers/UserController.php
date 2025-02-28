@@ -19,25 +19,40 @@ class UserController extends Controller
     public function show($id)
     {
         $member = FamilyTree::with('user')->findOrFail($id);
-        return view('users.detail.show', compact('member'));
+        $availableUsers = $this->getAvailableUsers($user->id ?? null);
+        return view('users.detail.show', compact(['member', 'availableUsers']));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => 'required|string|min:6',
+            'gender' => 'required|in:male,female',
+            'partner_id' => 'nullable|exists:users,id',
+            'father_id' => 'nullable|exists:users,id',
+            'mother_id' => 'nullable|exists:users,id',
         ]);
 
+        // Tạo User mới
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'member',
         ]);
 
-        return response()->json($user, 201);
+        // Thêm dữ liệu vào bảng family_trees
+        FamilyTree::create([
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'gender' => $request->gender,
+            'father_id' => $request->father_id,
+            'mother_id' => $request->mother_id,
+            'partner_id' => $request->partner_id,
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'Thêm user thành công!');
     }
 
     public function login(Request $request)
@@ -52,27 +67,51 @@ class UserController extends Controller
     }
 
     // Cập nhật thông tin thành viên
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $member = FamilyTree::findOrFail($id);
-        $user = User::findOrFail($member->user_id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6',
+            'gender' => 'required|in:male,female',
+            'partner_id' => 'nullable|exists:users,id',
+            'father_id' => 'nullable|exists:users,id',
+            'mother_id' => 'nullable|exists:users,id',
+        ]);
 
-        // Cập nhật thông tin user
+        // Cập nhật User
         $user->update([
-            'name' => $request->input('user_name'),
-            'email' => $request->input('email'),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
-        // Cập nhật thông tin thành viên
-        $member->update([
-            'name' => $request->input('member_name'),
-            'gender' => $request->input('gender'),
-            'birth_date' => $request->input('birth_date'),
-            'death_date' => $request->input('death_date'),
-            'image_url' => $request->input('image_url'),
-        ]);
+        // Cập nhật FamilyTree
+        $familyTree = FamilyTree::where('user_id', $user->id)->first();
+        if ($familyTree) {
+            $familyTree->update([
+                'name' => $user->name,
+                'gender' => $request->gender,
+                'father_id' => $request->father_id,
+                'mother_id' => $request->mother_id,
+                'partner_id' => $request->partner_id,
+            ]);
+        }
 
-        return redirect()->route('users.detail.show', $id)->with('success', 'Cập nhật thành công!');
+        return redirect()->route('users.index')->with('success', 'Cập nhật user thành công!');
+    }
+
+    public function getAvailableUsers($currentUserId = null)
+    {
+        // Lấy danh sách user chưa có quan hệ gia đình
+        $usedUserIds = FamilyTree::pluck('user_id')->toArray();
+
+        // Nếu đang chỉnh sửa user, bỏ qua user đó
+        if ($currentUserId) {
+            $usedUserIds = array_diff($usedUserIds, [$currentUserId]);
+        }
+
+        return User::whereNotIn('id', $usedUserIds)->get();
     }
 
     public function destroy(Request $request, $id)
